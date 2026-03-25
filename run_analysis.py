@@ -171,7 +171,7 @@ def plot_odds_ratio_forest(model_state, output_dir: Path):
         return
 
     # Convert log-odds to odds ratios
-    fig, ax = plt.subplots(figsize=(8, 1.5 + len(params) * 0.8))
+    fig, ax = plt.subplots(figsize=(10, 2.0 + len(params) * 1.0))
 
     y_positions = list(range(len(params)))
     for i, p in enumerate(params):
