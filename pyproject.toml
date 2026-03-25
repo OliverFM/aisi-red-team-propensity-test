@@ -1,0 +1,13 @@
+[project]
+name = "aisi-red-team-propensity-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "inspect-ai>=0.3.200",
+    "petri",
+]
+
+[tool.uv.sources]
+petri = { git = "https://github.com/safety-research/petri" }

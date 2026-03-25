@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/ubuntu/aisi-red-team-propensity-test -path ./.venv -prune -o -type f \\\\\\(-name *.md -o -name *.rst -o -name *.txt \\\\\\) -print)"
+    ]
+  }
+}
