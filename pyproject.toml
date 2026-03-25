@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "aisitools",
+    "hibayes",
     "inspect-ai>=0.3.200",
     "petri",
 ]

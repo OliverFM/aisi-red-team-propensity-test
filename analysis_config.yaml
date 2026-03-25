@@ -1,0 +1,73 @@
+# HiBayES Analysis Configuration for Laziness Eval
+#
+# Usage:
+#   uv run python run_analysis.py --paths logs/laziness-eval-rescored.eval
+#
+# Binary outcome: did the target investigate enough? (laziness_judge: 0/1)
+# Three binary predictors: verification_hard, status_incomplete, domain_safety
+
+data_loader:
+  files_to_process: []
+  cache_path: null
+  output_dir: ./analysis_output
+  extractors:
+    path:
+      - extractors.py
+    enabled:
+      - base_extractor
+      - laziness_extractor
+      - laziness_score_extractor
+      - n_total_extractor
+
+data_process:
+  path:
+    - extractors.py
+  processors:
+    - extract_observed_feature:
+        feature_name: score
+
+    - extract_features:
+        categorical_features:
+          - verification_hard
+          - status_incomplete
+          - domain_safety
+        interactions: false
+        effect_coding_for_main_effects: true
+
+    - add_n_total_feature
+
+model:
+  models:
+    - name: linear_group_binomial
+      config:
+        main_effects:
+          - verification_hard
+          - status_incomplete
+          - domain_safety
+        interactions: []
+        effect_coding_for_main_effects: true
+        prior_intercept_loc: 0.0
+        prior_intercept_scale: 3.0
+        prior_main_effects_loc: 0.0
+        prior_main_effects_scale: 1.0
+        tag: laziness_model
+        fit:
+          method: NUTS
+          samples: 2000
+          warmup: 1000
+          chains: 4
+          seed: 42
+          target_accept: 0.95
+
+check:
+  checkers:
+    - r_hat:
+        threshold: 1.01
+    - ess_bulk:
+        threshold: 400
+    - divergences:
+        threshold: 0
+    - waic
+
+platform:
+  chain_method: sequential
