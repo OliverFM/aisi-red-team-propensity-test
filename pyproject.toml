@@ -5,9 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aisitools",
     "inspect-ai>=0.3.200",
     "petri",
 ]
 
 [tool.uv.sources]
 petri = { git = "https://github.com/safety-research/petri" }
+aisitools = { git = "ssh://git@github.com/AI-Safety-Institute/aisi-inspect-tools" }
+hibayes = { git = "https://github.com/UKGovernmentBEIS/hibayes.git" }
