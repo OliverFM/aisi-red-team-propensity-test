@@ -9,6 +9,7 @@ dependencies = [
     "hibayes",
     "inspect-ai>=0.3.200",
     "petri",
+    "ruff>=0.15.7",
 ]
 
 [tool.uv.sources]

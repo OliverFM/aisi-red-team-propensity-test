@@ -12,7 +12,6 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from hibayes.analysis import AnalysisConfig, load_data, model, process_data
 from hibayes.ui import ModellingDisplay
 
@@ -75,12 +74,19 @@ def main():
             print(f"  {col}: {df[col].value_counts().to_dict()}")
 
     # Print cross-tabulation
-    if all(c in df.columns for c in ["score", "verification_hard", "status_incomplete", "domain_safety"]):
+    if all(
+        c in df.columns
+        for c in ["score", "verification_hard", "status_incomplete", "domain_safety"]
+    ):
         print("\n=== Score by condition ===")
-        grouped = df.groupby(["verification_hard", "status_incomplete", "domain_safety"])["score"]
+        grouped = df.groupby(
+            ["verification_hard", "status_incomplete", "domain_safety"]
+        )["score"]
         for name, group in grouped:
-            print(f"  hard={name[0]}, incomplete={name[1]}, safety={name[2]}: "
-                  f"mean={group.mean():.2f}, n={len(group)}")
+            print(
+                f"  hard={name[0]}, incomplete={name[1]}, safety={name[2]}: "
+                f"mean={group.mean():.2f}, n={len(group)}"
+            )
 
     # Process data for modelling
     logger.info("Processing data...")
@@ -121,7 +127,9 @@ def main():
         if "divergences" in diag:
             print(f"  Divergences: {diag['divergences']}")
         if "r_hat" in diag:
-            print(f"  Max R-hat: {max(diag['r_hat']) if hasattr(diag['r_hat'], '__iter__') else diag['r_hat']}")
+            print(
+                f"  Max R-hat: {max(diag['r_hat']) if hasattr(diag['r_hat'], '__iter__') else diag['r_hat']}"
+            )
 
         # Generate forest plot
         plot_odds_ratio_forest(model_state, Path("plots"))
@@ -160,11 +168,13 @@ def plot_odds_ratio_forest(model_state, output_dir: Path):
             logger.warning(f"True not in coords for {key}, skipping")
             continue
         samples = da.sel({coord_dim: True}).values.flatten()
-        params.append({
-            "name": var_name,
-            "display": PARAM_DISPLAY_NAMES[var_name],
-            "log_or_samples": samples,
-        })
+        params.append(
+            {
+                "name": var_name,
+                "display": PARAM_DISPLAY_NAMES[var_name],
+                "log_or_samples": samples,
+            }
+        )
 
     if not params:
         logger.warning("No parameters found for forest plot")
@@ -181,15 +191,23 @@ def plot_odds_ratio_forest(model_state, output_dir: Path):
         hdi_hi = np.percentile(or_samples, 97.5)
 
         ax.errorbar(
-            median, i,
+            median,
+            i,
             xerr=[[median - hdi_lo], [hdi_hi - median]],
-            fmt="o", color="steelblue", capsize=5, markersize=8, linewidth=2,
+            fmt="o",
+            color="steelblue",
+            capsize=5,
+            markersize=8,
+            linewidth=2,
         )
 
         ax.annotate(
             f"OR={median:.2f} [{hdi_lo:.2f}, {hdi_hi:.2f}]",
-            xy=(hdi_hi, i), xytext=(8, 0),
-            textcoords="offset points", va="center", fontsize=9,
+            xy=(hdi_hi, i),
+            xytext=(8, 0),
+            textcoords="offset points",
+            va="center",
+            fontsize=9,
         )
 
     # Reference line at OR=1 (no effect)
@@ -199,7 +217,9 @@ def plot_odds_ratio_forest(model_state, output_dir: Path):
     ax.set_yticks(y_positions)
     ax.set_yticklabels([p["display"] for p in params])
     ax.set_xlabel("Odds Ratio for Meeting Effort/Thoroughness Criteria (95% HDI)")
-    ax.set_title("Effect of Experimental Conditions on Meeting Effort/Thoroughness Criteria")
+    ax.set_title(
+        "Effect of Experimental Conditions on Meeting Effort/Thoroughness Criteria"
+    )
     ax.invert_yaxis()
 
     fig.tight_layout()
